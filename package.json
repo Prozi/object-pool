@@ -1,5 +1,5 @@
 {
-  "name": "object-pool",
+  "name": "@jacekpietal/object-pool",
   "version": "1.0.0",
   "description": "Object Pool manager for instantiating, getting, reuising and destroying objects in javascript (mostly for games)",
   "main": "index.js",
