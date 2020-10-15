@@ -8,6 +8,14 @@ class ObjectPool {
     this.factory = factory;
   }
 
+  onNext(id, value) {
+    // extend class to use
+  }
+
+  onBack(id, value) {
+    // extend class to use
+  }
+
   next() {
     if (this.objects.size === 0) {
       this.objects.set(v4(), this.factory());
@@ -18,11 +26,17 @@ class ObjectPool {
 
     this.objects.delete(next);
 
+    this.onNext(next, result);
+
     return result;
   }
 
   back(object) {
-    this.objects.set(v4(), object);
+    const id = v4();
+
+    this.objects.set(id, object);
+
+    this.onBack(id, object);
   }
 }
 

@@ -1,5 +1,14 @@
 const { ObjectPool } = require(".");
 
+class PoolWithEvents extends ObjectPool {
+  onNext(id, value) {
+    console.log(id, value);
+  }
+  onBack(id, value) {
+    console.log(id, value);
+  }
+}
+
 describe("GIVEN ObjectPool instance", () => {
   let pool;
 
@@ -12,7 +21,7 @@ describe("GIVEN ObjectPool instance", () => {
   });
 
   describe("WHEN pool.next is called", () => {
-    it("THEN objects size should be 0 afterwards", () => {
+    it("THEN even if objects size is 0", () => {
       expect(pool.objects.size).toBe(0);
     });
 
@@ -26,6 +35,37 @@ describe("GIVEN ObjectPool instance", () => {
       pool.back(false);
 
       expect(pool.objects.size).toBeGreaterThan(0);
+    });
+  });
+});
+
+describe("GIVEN extended class instance", () => {
+  let pool;
+
+  beforeEach(() => {
+    pool = new PoolWithEvents(() => true);
+
+    jest.spyOn(pool, "onNext");
+    jest.spyOn(pool, "onBack");
+  });
+
+  it("THEN It should create", () => {
+    expect(pool).toBeTruthy();
+  });
+
+  describe("WHEN pool.next is called", () => {
+    it("THEN onNext function should be called too", () => {
+      pool.next();
+
+      expect(pool.onNext).toHaveBeenCalled();
+    });
+  });
+
+  describe("WHEN pool.back is called", () => {
+    it("THEN onBack function should be called too", () => {
+      pool.back("works");
+
+      expect(pool.onBack).toHaveBeenCalled();
     });
   });
 });
