@@ -1,13 +1,17 @@
+# Installation
+
+`npm install @jacekpietal/object-pool --save`
+
 # Usage
 
 ```javascript
-const { ObjectPool } = require("object-pool");
+const { ObjectPool } = require("@jacekpietal/object-pool");
 
 const pool = new ObjectPool(factory);
 
 // you should provide this function
 function factory() {
-    // that returns a new object instance
+  // that returns a new object instance
 }
 
 // will return value from pool
@@ -18,14 +22,18 @@ const nextValue = pool.next();
 pool.back(nextValue);
 ```
 
-# next and back events
+# Events
 
 ```javascript
 pool.events.on("next", (value) => {
-    console.log({ next: value });
+  console.log({ next: value });
 });
 
 pool.events.on("back", (value) => {
-    console.log({ back: value });
+  console.log({ back: value });
+});
+
+pool.events.on("remove", (value) => {
+  console.log({ remove: value });
 });
 ```
