@@ -37,3 +37,19 @@ pool.events.on("remove", (value) => {
   console.log({ remove: value });
 });
 ```
+
+# API
+
+```javascript
+pool.next(); // returns next value from pool
+
+pool.back(object); // puts back value to end of pool
+
+pool.empty(); // empties the whole pool
+
+pool.remove(object); // removes object from pool manually
+```
+
+# License
+
+MIT
