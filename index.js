@@ -1,6 +1,5 @@
 "use strict";
 
-const { v4 } = require("uuid");
 const EventEmitter = require("events");
 
 class ObjectPool {
@@ -8,6 +7,18 @@ class ObjectPool {
     this.factory = factory;
     this.objects = new Set();
     this.events = new EventEmitter();
+  }
+
+  empty() {
+    if (this.objects.size === 0) {
+      return;
+    }
+
+    const [result] = this.objects.values();
+
+    this.remove(result);
+
+    this.empty();
   }
 
   next() {
@@ -22,6 +33,12 @@ class ObjectPool {
     this.events.emit("next", result);
 
     return result;
+  }
+
+  remove(object) {
+    this.objects.delete(object);
+
+    this.events.emit("remove", object);
   }
 
   back(object) {
