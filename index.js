@@ -23,7 +23,11 @@ class ObjectPool {
 
   next() {
     if (this.objects.size === 0) {
-      this.objects.add(this.factory());
+      const result = this.factory();
+
+      this.events.emit("next", result);
+
+      return result;
     }
 
     const [result] = this.objects.values();
