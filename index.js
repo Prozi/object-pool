@@ -1,42 +1,33 @@
 "use strict";
 
 const { v4 } = require("uuid");
+const EventEmitter = require("events");
 
 class ObjectPool {
   constructor(factory) {
-    this.objects = new Map();
     this.factory = factory;
-  }
-
-  onNext(id, value) {
-    // extend class to use
-  }
-
-  onBack(id, value) {
-    // extend class to use
+    this.objects = new Set();
+    this.events = new EventEmitter();
   }
 
   next() {
     if (this.objects.size === 0) {
-      this.objects.set(v4(), this.factory());
+      this.objects.add(this.factory());
     }
 
-    const [next] = this.objects.keys();
-    const result = this.objects.get(next);
+    const [result] = this.objects.values();
 
-    this.objects.delete(next);
+    this.objects.delete(result);
 
-    this.onNext(next, result);
+    this.events.emit("next", result);
 
     return result;
   }
 
   back(object) {
-    const id = v4();
+    this.objects.add(object);
 
-    this.objects.set(id, object);
-
-    this.onBack(id, object);
+    this.events.emit("back", object);
   }
 }
 

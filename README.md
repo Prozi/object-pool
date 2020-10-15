@@ -18,19 +18,14 @@ const nextValue = pool.next();
 pool.back(nextValue);
 ```
 
-# Extend class
-
-### to override and use `onNext` and `onBack` pseudo-events.
+# next and back events
 
 ```javascript
-const { ObjectPool } = require("object-pool");
+pool.events.on("next", (value) => {
+    console.log({ next: value });
+});
 
-class PoolWithEvents extends ObjectPool {
-    onNext(id, value) {
-        console.log(id, value);
-    }
-    onBack(id, value) {
-        console.log(id, value);
-    }
-}
+pool.events.on("back", (value) => {
+    console.log({ back: value });
+});
 ```

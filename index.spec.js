@@ -44,9 +44,6 @@ describe("GIVEN extended class instance", () => {
 
   beforeEach(() => {
     pool = new PoolWithEvents(() => true);
-
-    jest.spyOn(pool, "onNext");
-    jest.spyOn(pool, "onBack");
   });
 
   it("THEN It should create", () => {
@@ -54,18 +51,18 @@ describe("GIVEN extended class instance", () => {
   });
 
   describe("WHEN pool.next is called", () => {
-    it("THEN onNext function should be called too", () => {
-      pool.next();
+    it("THEN onNext function should be called too", async (done) => {
+      pool.events.on("next", () => done());
 
-      expect(pool.onNext).toHaveBeenCalled();
+      pool.next();
     });
   });
 
   describe("WHEN pool.back is called", () => {
-    it("THEN onBack function should be called too", () => {
-      pool.back("works");
+    it("THEN onBack function should be called too", async (done) => {
+      pool.events.on("back", () => done());
 
-      expect(pool.onBack).toHaveBeenCalled();
+      pool.back("works");
     });
   });
 });
