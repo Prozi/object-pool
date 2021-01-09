@@ -1,7 +1,7 @@
 {
   "name": "@jacekpietal/object-pool",
-  "version": "1.0.2",
-  "description": "Object Pool manager for instantiating, getting, reuising and destroying objects in javascript (mostly for games)",
+  "version": "1.1.0",
+  "description": "zero-dependency Object Pool manager for instantiating, getting, reuising and destroying objects in javascript",
   "main": "index.js",
   "scripts": {
     "test": "jest"

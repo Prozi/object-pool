@@ -3,53 +3,71 @@
 const EventEmitter = require("events");
 
 class ObjectPool {
-  constructor(factory) {
-    this.factory = factory;
+  constructor(factoryFunction) {
+    this.factory = factoryFunction;
+
     this.objects = new Set();
+
     this.events = new EventEmitter();
   }
 
-  empty() {
-    if (this.objects.size === 0) {
-      return;
-    }
-
-    const [result] = this.objects.values();
-
-    this.remove(result);
-
-    this.empty();
+  get size() {
+    return this.objects.size;
   }
 
-  next() {
-    if (this.objects.size === 0) {
-      const result = this.factory();
-
-      this.events.emit("next", result);
-
-      return result;
+  set size(size = 0) {
+    if (typeof size !== "number") {
+      throw new Error("Parameter is not a number: " + typeof size);
     }
 
-    const [result] = this.objects.values();
+    let current = this.objects.size;
 
-    this.objects.delete(result);
+    while (current < size) {
+      const object = this.factory();
 
-    this.events.emit("next", result);
+      this.put(object);
 
-    return result;
+      current++;
+    }
+
+    while (current > size) {
+      const [object] = this.objects.values();
+
+      this.delete(object);
+
+      current--;
+    }
   }
 
-  remove(object) {
+  get() {
+    if (this.size === 0) {
+      const object = this.factory();
+
+      this.events.emit("get", object);
+
+      return object;
+    }
+
+    const [object] = this.objects.values();
+
     this.objects.delete(object);
 
-    this.events.emit("remove", object);
+    this.events.emit("get", object);
+
+    return object;
   }
 
-  back(object) {
+  put(object) {
     this.objects.add(object);
 
-    this.events.emit("back", object);
+    this.events.emit("put", object);
+  }
+
+  delete(object) {
+    this.objects.delete(object);
+
+    this.events.emit("delete", object);
   }
 }
 
-module.exports.ObjectPool = ObjectPool;
+module.exports = ObjectPool;
